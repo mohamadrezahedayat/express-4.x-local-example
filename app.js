@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var passport = require('passport');
 var path = require('path');
@@ -25,11 +26,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
-app.use(function(req, res, next) {
+app.use(
+  require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use((req, res, next) => {
   var msgs = req.session.messages || [];
   res.locals.messages = msgs;
-  res.locals.hasMessages = !! msgs.length;
+  res.locals.hasMessages = !!msgs.length;
   req.session.messages = [];
   next();
 });
